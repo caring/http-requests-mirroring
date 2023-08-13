@@ -124,9 +124,10 @@ func forwardRequest(req *http.Request, reqSourceIP string, reqDestionationPort s
 	}
 
 	// create a new url from the raw RequestURI sent by the client
-	var dest = "http://10.0.23.217"
-	log.Println("Forwarding traffic to %f", dest)
-	url := fmt.Sprintf("%s%s", dest, req.RequestURI)
+	url := fmt.Sprintf("%s%s", string(*fwdDestination), req.RequestURI)
+	//var dest = "http://10.0.23.217"
+	//log.Println("Forwarding traffic to %f", dest)
+	//url := fmt.Sprintf("%s%s", dest, req.RequestURI)
 
 	// create a new HTTP request
 	forwardReq, err := http.NewRequest(req.Method, url, bytes.NewReader(body))
