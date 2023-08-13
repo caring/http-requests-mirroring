@@ -191,7 +191,7 @@ Resources:
       SecurityGroups:
         - !Ref InstanceSecurityGroup
       InstanceType: !Ref InstanceType
-      AssociatePublicIpAddress: "false"
+      AssociatePublicIpAddress: "true"
       UserData: !Base64 
         'Fn::Join':
           - ''
