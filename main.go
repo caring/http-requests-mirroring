@@ -164,8 +164,7 @@ func forwardRequest(req *http.Request, reqSourceIP string, reqDestionationPort s
 		log.Println("Forward request error", ":", err)
 		return
 	}
-	log.Println("Forward request error to ", url)
-	defer log.Println("Forwarding traffic to %f", url)
+	defer log.Println("Forwarding traffic to %f", req.RequestURI)
 
 	//defer log.Println("Response: %f", resp)
 
