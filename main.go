@@ -24,6 +24,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/google/gopacket"
@@ -85,6 +86,17 @@ func (h *httpStream) run() {
 	}
 }
 
+func pathCheck(path string) bool {
+	allowed_paths = []string{"/api/v2"}
+	for _, value := range sl {
+		// if path starts with allowed value
+		if strings.HasPrefix(path, value) {
+			return true
+		}
+	}
+	return false
+}
+
 func forwardRequest(req *http.Request, reqSourceIP string, reqDestionationPort string, body []byte) {
 
 	// if percentage flag is not 100, then a percentage of requests is skipped
@@ -142,6 +154,12 @@ func forwardRequest(req *http.Request, reqSourceIP string, reqDestionationPort s
 		}
 	}
 
+	// only send if the RequestURI is allowed
+	log.Println("Check if ", req.RequestURI, " is allowed")
+	if !pathCheck(req.RequestURI) {
+		return
+	}
+
 	// Append to X-Forwarded-For the IP of the client or the IP of the latest proxy (if any proxies are in between)
 	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
 	forwardReq.Header.Add("X-Forwarded-For", reqSourceIP)
@@ -164,7 +182,7 @@ func forwardRequest(req *http.Request, reqSourceIP string, reqDestionationPort s
 		log.Println("Forward request error", ":", err)
 		return
 	}
-	defer log.Println("Forwarding traffic to %f", req.RequestURI)
+	log.Println("Forwarding traffic to ", url)
 
 	//defer log.Println("Response: %f", resp)
 
