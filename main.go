@@ -87,8 +87,8 @@ func (h *httpStream) run() {
 }
 
 func pathCheck(path string) bool {
-	allowed_paths = []string{"/api/v2"}
-	for _, value := range sl {
+	allowed_paths := []string{"/api/v2"}
+	for _, value := range allowed_paths {
 		// if path starts with allowed value
 		if strings.HasPrefix(path, value) {
 			return true
