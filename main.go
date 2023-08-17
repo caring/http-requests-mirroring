@@ -81,6 +81,7 @@ func (h *httpStream) run() {
 				return
 			}
 			req.Body.Close()
+			log.Println("Sending HTTP request from ", reqSourceIP, " to ", req.RequestURI)
 			go forwardRequest(req, reqSourceIP, reqDestionationPort, body)
 		}
 	}
@@ -269,7 +270,6 @@ func main() {
 				log.Println("Unusable packet")
 				continue
 			}
-			log.Println("packet received, forwarding...")
 			tcp := packet.TransportLayer().(*layers.TCP)
 			assembler.AssembleWithTimestamp(packet.NetworkLayer().NetworkFlow(), tcp, packet.Metadata().Timestamp)
 
