@@ -128,7 +128,6 @@ func forwardRequest(req *http.Request, reqSourceIP string, reqDestionationPort s
 	//var dest = "http://10.0.23.217"
 	//log.Println("Forwarding traffic to %f", dest)
 	//url := fmt.Sprintf("%s%s", dest, req.RequestURI)
-	log.Println("Forwarding traffic to %f", url)
 
 	// create a new HTTP request
 	forwardReq, err := http.NewRequest(req.Method, url, bytes.NewReader(body))
@@ -162,11 +161,13 @@ func forwardRequest(req *http.Request, reqSourceIP string, reqDestionationPort s
 	httpClient := &http.Client{}
 	resp, rErr := httpClient.Do(forwardReq)
 	if rErr != nil {
-		// log.Println("Forward request error", ":", err)
+		log.Println("Forward request error", ":", err)
 		return
 	}
+	log.Println("Forward request error to ", url)
+	defer log.Println("Forwarding traffic to %f", url)
 
-	defer log.Println("Response: %f", resp)
+	//defer log.Println("Response: %f", resp)
 
 	defer resp.Body.Close()
 }
