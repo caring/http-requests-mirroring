@@ -87,20 +87,29 @@ func (h *httpStream) run() {
 	}
 }
 
-func pathCheck(path string) bool {
-	allowed_paths := []string{
-		"/api/v2/reviews",
-		"/api/v2/provider_review_responses",
-		"/api/v2/resources",
-		"/api/v2/leads",
+// We need to add also the HTTP method as a parameter
+func pathCheck(path string) string {
+	// Remove .jsonapi from the path
+	path = strings.Replace(path, ".jsonapi", "", -1)
+
+	// For example /api/v2/reviews/1234/responses.jsonapi becomes /api/v2/reviews/1234/responses
+	// [POST] https://dir.caring.com/api/v2/reviews/:id/responses.jsonapi          => https://api.caring.com/v1/reviews-integrations/reviews/:id/provider-responses
+
+	transformed_paths := map[string]string{
+		"GET:/api/v2/reviews":                    "/v1/reviews-integrations",
+		"GET:/api/v2/provider_review_responses":  "/v1/reviews-integrations/provider-responses",
+		"POST:/api/v2/provider_review_responses": "/v1/reviews-integrations/reviews",
+		"GET:/api/v2/resources":                  "/v1/provider-portal/location-services",
 	}
-	for _, value := range allowed_paths {
-		// if path starts with allowed value
-		if strings.HasPrefix(path, value) {
-			return true
+
+	for key, value := range transformed_paths {
+		if strings.HasPrefix(path, key) {
+			path = strings.Replace(path, key, value, 1)
+			return path
 		}
 	}
-	return false
+
+	return ""
 }
 
 func forwardRequest(req *http.Request, reqSourceIP string, reqDestionationPort string, body []byte) {
@@ -140,6 +149,11 @@ func forwardRequest(req *http.Request, reqSourceIP string, reqDestionationPort s
 			return
 		}
 	}
+	// only send if the RequestURI is allowed
+	log.Println("Check if ", req.RequestURI, " is allowed")
+	if !pathCheck(req.RequestURI) {
+		return
+	}
 
 	// create a new url from the raw RequestURI sent by the client
 	url := fmt.Sprintf("%s%s", string(*fwdDestination), req.RequestURI)
@@ -158,12 +172,6 @@ func forwardRequest(req *http.Request, reqSourceIP string, reqDestionationPort s
 		for _, value := range values {
 			forwardReq.Header.Add(header, value)
 		}
-	}
-
-	// only send if the RequestURI is allowed
-	log.Println("Check if ", req.RequestURI, " is allowed")
-	if !pathCheck(req.RequestURI) {
-		return
 	}
 
 	// Append to X-Forwarded-For the IP of the client or the IP of the latest proxy (if any proxies are in between)
