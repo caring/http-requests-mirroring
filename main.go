@@ -151,12 +151,17 @@ func forwardRequest(req *http.Request, reqSourceIP string, reqDestionationPort s
 	}
 	// only send if the RequestURI is allowed
 	log.Println("Check if ", req.RequestURI, " is allowed")
-	if !pathCheck(req.RequestURI) {
+	// concatenate the method and the path so we get something like this "GET:/api/v2/reviews"
+	methodAndPath := req.Method + ":" + req.RequestURI
+
+	if newPath := pathCheck(methodAndPath); newPath != "" {
 		return
 	}
 
 	// create a new url from the raw RequestURI sent by the client
-	url := fmt.Sprintf("%s%s", string(*fwdDestination), req.RequestURI)
+	//url := fmt.Sprintf("%s%s", string(*fwdDestination), req.RequestURI)
+	url := fmt.Sprintf("%s%s", string(*fwdDestination), newPath)
+
 	//var dest = "http://10.0.23.217"
 	//log.Println("Forwarding traffic to %f", dest)
 	//url := fmt.Sprintf("%s%s", dest, req.RequestURI)
