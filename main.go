@@ -154,7 +154,7 @@ func forwardRequest(req *http.Request, reqSourceIP string, reqDestionationPort s
 	// concatenate the method and the path so we get something like this "GET:/api/v2/reviews"
 	methodAndPath := req.Method + ":" + req.RequestURI
 	newPath := pathCheck(methodAndPath)
-	if newPath != "" {
+	if newPath == "" {
 		return
 	}
 
