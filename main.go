@@ -81,7 +81,7 @@ func (h *httpStream) run() {
 				return
 			}
 			req.Body.Close()
-			log.Println("Sending HTTP request from ", reqSourceIP, " to ", req.RequestURI)
+			//log.Println("Sending HTTP request from ", reqSourceIP, " to ", req.RequestURI)
 			go forwardRequest(req, reqSourceIP, reqDestionationPort, body)
 		}
 	}
@@ -202,6 +202,8 @@ func forwardRequest(req *http.Request, reqSourceIP string, reqDestionationPort s
 		return
 	}
 	log.Println("Forwarding traffic to ", url)
+	log.Println("Headers: ", forwardReq.Header)
+	defer log.Println("Response status code", ":", resp.StatusCode)
 
 	//defer log.Println("Response: %f", resp)
 
