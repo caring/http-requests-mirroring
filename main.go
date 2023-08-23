@@ -150,7 +150,7 @@ func forwardRequest(req *http.Request, reqSourceIP string, reqDestionationPort s
 		}
 	}
 	// only send if the RequestURI is allowed
-	log.Println("Check if ", req.RequestURI, " is allowed")
+	//log.Println("Check if ", req.RequestURI, " is allowed")
 	// concatenate the method and the path so we get something like this "GET:/api/v2/reviews"
 	methodAndPath := req.Method + ":" + req.RequestURI
 	newPath := pathCheck(methodAndPath)
@@ -201,6 +201,7 @@ func forwardRequest(req *http.Request, reqSourceIP string, reqDestionationPort s
 		log.Println("Forward request error", ":", err)
 		return
 	}
+	log.Println("Original Request: ", req.RequestURI)
 	log.Println("Forwarding traffic to ", url)
 	log.Println("Headers: ", forwardReq.Header)
 	defer log.Println("Response status code", ":", resp.StatusCode)
