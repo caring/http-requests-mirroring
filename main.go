@@ -92,19 +92,19 @@ func pathCheck(path string) string {
 	// Remove .jsonapi from the path
 	path = strings.Replace(path, ".jsonapi", "", -1)
 
-	// For example /api/v2/reviews/1234/responses.jsonapi becomes /api/v2/reviews/1234/responses
-	// [POST] https://dir.caring.com/api/v2/reviews/:id/responses.jsonapi          => https://api.caring.com/v1/reviews-integrations/reviews/:id/provider-responses
-
 	transformed_paths := map[string]string{
-		"GET:/api/v2/reviews":                    "/v1/reviews-integrations",
-		"GET:/api/v2/provider_review_responses":  "/v1/reviews-integrations/provider-responses",
-		"POST:/api/v2/provider_review_responses": "/v1/reviews-integrations/reviews",
-		"GET:/api/v2/resources":                  "/v1/provider-portal/location-services",
+		"GET:/api/v2/reviews":                   "/v1/reviews-integrations",
+		"GET:/api/v2/provider_review_responses": "/v1/reviews-integrations/provider-responses",
+		"POST:/api/v2/reviews":                  "/v1/reviews-integrations/reviews",
+		"GET:/api/v2/resources":                 "/v1/provider-portal/location-services",
 	}
 
 	for key, value := range transformed_paths {
 		if strings.HasPrefix(path, key) {
 			path = strings.Replace(path, key, value, 1)
+			if strings.HasPrefix(path, "POST:/api/v2/reviews") {
+				path = strings.Replace(path, "responses", "provider-responses", 1)
+			}
 			return path
 		}
 	}
