@@ -72,6 +72,9 @@ func (h *httpStream) run() {
 			// We must read until we see an EOF... very important!
 			return
 		} else if err != nil {
+
+			// Why we are getting this error  malformed HTTP request "X-Forwarded-Port: 443"
+
 			log.Println("Error reading stream", h.net, h.transport, ":", err)
 		} else {
 			reqSourceIP := h.net.Src().String()
@@ -192,6 +195,9 @@ func forwardRequest(req *http.Request, reqSourceIP string, reqDestionationPort s
 	}
 	if forwardReq.Header.Get("X-Forwarded-Host") == "" {
 		forwardReq.Header.Set("X-Forwarded-Host", req.Host)
+	}
+	if forwardReq.Header.Get("X-Forwarded-Request") == "" {
+		forwardReq.Header.Set("X-Forwarded-Request", req.RequestURI)
 	}
 	// time.Sleep(30 * time.Second)
 	// Execute the new HTTP request
