@@ -103,10 +103,10 @@ func pathCheck(path string) string {
 	}
 
 	for key, value := range transformed_paths {
-		if strings.HasPrefix(path, "POST:/api/v2/reviews") {
-			path = strings.Replace(path, "responses", "provider-responses", 1)
-		}
 		if strings.HasPrefix(path, key) {
+			if strings.HasPrefix(path, "POST:/api/v2/reviews") {
+				path = strings.Replace(path, "responses", "provider-responses", 1)
+			}
 			path = strings.Replace(path, key, value, 1)
 			return path
 		}
