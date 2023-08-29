@@ -75,11 +75,15 @@ func (h *httpStream) run() {
 
 			// Why we are getting this error  malformed HTTP request "X-Forwarded-Port: 443"
 
-			log.Println("Error reading stream", h.net, h.transport, ":", err)
+			//log.Println("Error reading stream", h.net, h.transport, ":", err)
 		} else {
 			reqSourceIP := h.net.Src().String()
 			reqDestionationPort := h.transport.Dst().String()
 			body, bErr := ioutil.ReadAll(req.Body)
+			if req.Method == "POST" && strings.HasPrefix(req.URL.Path, "/api/v2/reviews") {
+				log.Println("Reading Request:", req)
+				log.Println("Reading Body:", string(body))
+			}
 			if bErr != nil {
 				return
 			}
@@ -207,15 +211,11 @@ func forwardRequest(req *http.Request, reqSourceIP string, reqDestionationPort s
 		log.Println("Forward request error", ":", err)
 		return
 	}
-	log.Println("Original Request: ", req.Method, req.RequestURI)
-	log.Println("Forwarding traffic to ", url)
-	log.Println("Headers: ", forwardReq.Header)
+	//log.Println("Original Request: ", req.Method, req.RequestURI)
+	//log.Println("Forwarding traffic to ", url)
+	//log.Println("Headers: ", forwardReq.Header)
 	//Log the data payload if the method is POST
-	if req.Method == "POST" {
-		log.Println("Payload: ", string(body))
-	}
-
-	defer log.Println("Response status code", ":", resp.StatusCode)
+	//defer log.Println("Response status code", ":", resp.StatusCode)
 
 	//defer log.Println("Response: %f", resp)
 
