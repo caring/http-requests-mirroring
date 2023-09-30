@@ -99,7 +99,7 @@ func pathCheck(path string) string {
 	// Remove .jsonapi from the path
 	path = strings.Replace(path, ".jsonapi", "", -1)
 	// Remove .json from the path
-	//path = strings.Replace(path, ".json", "", -1)
+	path = strings.Replace(path, ".json", "", -1)
 
 	transformed_paths := map[string]string{
 		"GET:/api/v2/reviews":                   "/v1/reviews-integrations",
