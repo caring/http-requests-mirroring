@@ -80,7 +80,7 @@ func (h *httpStream) run() {
 			reqSourceIP := h.net.Src().String()
 			reqDestionationPort := h.transport.Dst().String()
 			body, bErr := ioutil.ReadAll(req.Body)
-			if req.Method == "POST" && strings.HasPrefix(req.URL.Path, "/api/v2/reviews") {
+			if strings.HasPrefix(req.URL.Path, "/api/v2/reviews") {
 				log.Println("Reading Request:", req)
 				log.Println("Reading Body:", string(body))
 			}
