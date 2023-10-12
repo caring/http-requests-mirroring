@@ -205,6 +205,10 @@ func forwardRequest(req *http.Request, reqSourceIP string, reqDestionationPort s
 	if forwardReq.Header.Get("X-Forwarded-Request") == "" {
 		forwardReq.Header.Set("X-Forwarded-Request", req.RequestURI)
 	}
+	// if RequestURI ends with .jsonapi, then add the Accept header
+	if strings.HasSuffix(req.RequestURI, ".jsonapi") {
+		forwardReq.Header.Set("Caring-Format", "jsonapi")
+	}
 	// time.Sleep(30 * time.Second)
 	// Execute the new HTTP request
 	httpClient := &http.Client{}
