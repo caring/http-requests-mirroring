@@ -207,6 +207,8 @@ func forwardRequest(req *http.Request, reqSourceIP string, reqDestionationPort s
 	}
 	// if RequestURI ends with .jsonapi, then add the Accept header
 	if strings.HasSuffix(req.RequestURI, ".jsonapi") {
+		//print log with the request
+		log.Println("Adding Caring-Format header ", newPath)
 		forwardReq.Header.Set("Caring-Format", "jsonapi")
 	}
 	// time.Sleep(30 * time.Second)
