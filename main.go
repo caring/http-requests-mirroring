@@ -106,6 +106,7 @@ func pathCheck(path string) string {
 		"GET:/api/v2/provider_review_responses": "/v1/reviews-integrations/provider-responses",
 		"POST:/api/v2/reviews":                  "/v1/reviews-integrations/reviews",
 		"GET:/api/v2/resources":                 "/v1/provider-portal/location-services",
+		"POST:/api/v2/lead-status":              "/v3/lead-status",
 	}
 
 	for key, value := range transformed_paths {
